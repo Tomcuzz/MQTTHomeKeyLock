@@ -1,0 +1,31 @@
+{
+    "name": "mqtt-homekey-lock",
+    "version": "0.0.1",
+    "description": "A NFC Reader that Exposes a Homekit HomeKey Lock and publishes over mqtt",
+    "main": "mqtt-lock.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Tomcuzz/MQTTHomeKeyLock.git"
+    },
+    "keywords": [
+      "homebridge-plugin",
+      "hassio",
+      "homekey"
+    ],
+    "author": "Thomas Cousin",
+    "license": "MIT",
+    "engines": {
+      "node": ">=6.0.0"
+    },
+    "bugs": {
+        "url": "https://github.com/Tomcuzz/MQTTHomeKeyLock/issues"
+    },
+    "homepage": "https://github.com/Tomcuzz/MQTTHomeKeyLock#readme",
+    "dependencies": {
+        "mqtt": "^2.9.0",
+        "hap-nodejs": ">=0.11.1"
+    }
+  }
