@@ -6,7 +6,7 @@ authors = ["Max Maton <me@mmaton.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.9 <=3.12"
 pyftdi = "^0.55.0"
 adafruit-blinka = "^8.22.4"
 nfcpy = "^1.0.4"

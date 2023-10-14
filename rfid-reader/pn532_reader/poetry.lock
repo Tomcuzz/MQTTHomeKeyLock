@@ -2,13 +2,13 @@
 
 [[package]]
 name = "adafruit-blinka"
-version = "8.22.4"
+version = "8.23.0"
 description = "CircuitPython APIs for non-CircuitPython versions of Python such as CPython on Linux and MicroPython."
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "Adafruit-Blinka-8.22.4.tar.gz", hash = "sha256:2cc5e301439a0381b7cf8149fba8ab9c9b329eebf20322642f53411009d2c1bb"},
-    {file = "Adafruit_Blinka-8.22.4-py3-none-any.whl", hash = "sha256:555ff3414ca776b18db85d5e75bba049f689c1d8c863bb6230e1ddde6efbefc8"},
+    {file = "Adafruit-Blinka-8.23.0.tar.gz", hash = "sha256:73569b9ff1a8edb1cab66ace655e0c5a97a26fcd9809eff62006e77c9a4a3c50"},
+    {file = "Adafruit_Blinka-8.23.0-py3-none-any.whl", hash = "sha256:d8fa99e41ae2d7aa20d0a1707eab0e31b8329d06ed39f00f6eba14c415863561"},
 ]
 
 [package.dependencies]
@@ -65,13 +65,13 @@ typing-extensions = ">=4.0,<5.0"
 
 [[package]]
 name = "adafruit-platformdetect"
-version = "3.52.3"
+version = "3.53.0"
 description = "Platform detection for use by libraries like Adafruit-Blinka."
 optional = false
 python-versions = "*"
 files = [
-    {file = "Adafruit-PlatformDetect-3.52.3.tar.gz", hash = "sha256:e49127b13bd8e0f800b9aa08c931eb88954950f00731811382a6e102e00f25c2"},
-    {file = "Adafruit_PlatformDetect-3.52.3-py3-none-any.whl", hash = "sha256:2d250e40d6705adbb2cb9f61c943c30db69571516f151bf03a7e159273f70ce2"},
+    {file = "Adafruit-PlatformDetect-3.53.0.tar.gz", hash = "sha256:3faa11f40b338f6ca3db0fb68408c2303c27809faeb9434ba60668a18226cf29"},
+    {file = "Adafruit_PlatformDetect-3.53.0-py3-none-any.whl", hash = "sha256:36e124346350218d51bea64f3e5f34fdc6524f3e32fd825bc2c438ec2b3f001c"},
 ]
 
 [[package]]
@@ -277,6 +277,20 @@ lint = ["flake8 (==4.0.1)", "flake8-bugbear (==21.9.2)", "mypy (==0.910)", "pre-
 tests = ["dj-database-url", "dj-email-url", "django-cache-url", "pytest"]
 
 [[package]]
+name = "exceptiongroup"
+version = "1.1.3"
+description = "Backport of PEP 654 (exception groups)"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "exceptiongroup-1.1.3-py3-none-any.whl", hash = "sha256:343280667a4585d195ca1cf9cef84a4e178c4b6cf2274caef9859782b567d5e3"},
+    {file = "exceptiongroup-1.1.3.tar.gz", hash = "sha256:097acd85d473d75af5bb98e41b61ff7fe35efe6675e4f9370ec6ec5126d160e9"},
+]
+
+[package.extras]
+test = ["pytest (>=6)"]
+
+[[package]]
 name = "executing"
 version = "2.0.0"
 description = "Get the currently executing AST node of a frame, and other information"
@@ -306,6 +320,7 @@ appnope = {version = "*", markers = "sys_platform == \"darwin\""}
 backcall = "*"
 colorama = {version = "*", markers = "sys_platform == \"win32\""}
 decorator = "*"
+exceptiongroup = {version = "*", markers = "python_version < \"3.11\""}
 jedi = ">=0.16"
 matplotlib-inline = "*"
 pexpect = {version = ">4.3", markers = "sys_platform != \"win32\""}
@@ -314,6 +329,7 @@ prompt-toolkit = ">=3.0.30,<3.0.37 || >3.0.37,<3.1.0"
 pygments = ">=2.4.0"
 stack-data = "*"
 traitlets = ">=5"
+typing-extensions = {version = "*", markers = "python_version < \"3.10\""}
 
 [package.extras]
 all = ["black", "curio", "docrepr", "exceptiongroup", "ipykernel", "ipyparallel", "ipywidgets", "matplotlib", "matplotlib (!=3.2.0)", "nbconvert", "nbformat", "notebook", "numpy (>=1.21)", "pandas", "pytest (<7)", "pytest (<7.1)", "pytest-asyncio", "qtconsole", "setuptools (>=18.5)", "sphinx (>=1.3)", "sphinx-rtd-theme", "stack-data", "testpath", "trio", "typing-extensions"]
@@ -680,5 +696,5 @@ files = [
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.11"
-content-hash = "2a73987c672f1a9755c43e56da1e67a6af566a845b939cd7336e696c88a42469"
+python-versions = ">=3.9 <=3.12"
+content-hash = "76e6238bf5b4fafbeec342ee81cc69fb52b39970f8e5fc36346481cb361e11af"
