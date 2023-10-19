@@ -55,7 +55,8 @@ def main(driver, interface, path):
     try:
         while True:
             target = clf.sense(
-                targets=[RemoteTarget("106A"), RemoteTarget("106B")],
+                RemoteTarget("106A"),
+                RemoteTarget("106B"),
                 broadcast=broadcast if len(broadcast) else None,
             )
             if not target:
