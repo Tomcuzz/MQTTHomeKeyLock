@@ -25,7 +25,11 @@ let configStateNum = 0;
 accessory
   .getService(Service.AccessoryInformation)
   // Key colour: https://github.com/kormax/apple-home-key#key-color prepend 0104 to hex value, append 00 and base64
-  .setCharacteristic(Characteristic.HardwareFinish, "AQSq1uwA")
+  // Black: "AQQAAAAA"
+  // Gold: "AQSq1uwA"
+  // Silver: "AQTj4+MA"
+  // Tan: "AQTO1doA"
+  .setCharacteristic(Characteristic.HardwareFinish, "AQQAAAAA")
   .setCharacteristic(Characteristic.Manufacturer, "Tinkerer")
   .setCharacteristic(Characteristic.Model, "NFC Lock Alpha")
   .setCharacteristic(Characteristic.SerialNumber, "NFC-LOCK-0001")
