@@ -188,7 +188,7 @@ accessory.addService(accessCodeService);
 
 // once everything is set up, we publish the accessory. Publish should always be the last step!
 accessory.publish({
-  username: "17:51:07:F4:BC:4B",
+  username: "17:51:07:F4:BC:4C",
   pincode: "111-11-111",
   port: 47169,
   category: hap.Categories.DOOR_LOCK, // value here defines the symbol shown in the pairing screen
