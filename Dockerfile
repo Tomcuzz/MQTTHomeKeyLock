@@ -5,8 +5,8 @@ WORKDIR /usr/app
 COPY package.json .
 RUN npm install
 
-COPY ./src .
+COPY ./rfid-reader/hap .
 
 EXPOSE 47170
 
-CMD ["node", "./mqtt-lock.js"]
+CMD ["node", "./lock.js"]
