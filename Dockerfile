@@ -5,7 +5,7 @@ WORKDIR /usr/app
 COPY package.json .
 RUN npm install
 
-COPY ./rfid-reader/hap .
+COPY ./hap .
 
 EXPOSE 47170
 
