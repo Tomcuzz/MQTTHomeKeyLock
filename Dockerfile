@@ -7,6 +7,6 @@ RUN npm install
 
 COPY ./hap .
 
-EXPOSE 47170
+EXPOSE 47169
 
 CMD ["node", "./lock.js"]
