@@ -92,12 +92,11 @@ controlPoint.on(CharacteristicEventTypes.SET, (value, callback) => {
 
     callback(undefined, tlvEncode(0x01, 0x02, 0x03, response).toString("base64"));
   } else if (decodedData[1][0] == 3) {
-    console.log("Control Point Write - Add");
-    let request = tlvDecode(decodedData[2]);
-
-    var response = Buffer.alloc(0);
-
+    
     if (request[2] !== undefined) {
+      console.log("Control Point Write - Add");
+      let request = tlvDecode(decodedData[2]);
+      var response = Buffer.alloc(0);
       let acID = Math.floor(Math.random() * 128);
       let code = request[2].toString("utf8");
       accessCodeStorage[acID.toString()] = code;
