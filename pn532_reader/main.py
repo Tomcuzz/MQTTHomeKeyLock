@@ -109,7 +109,12 @@ def main(driver, interface, path):
 
             need_standard = True
             if need_standard:
-                lock_signature = b''
+                public_key = ec.EllipticCurvePrivateKey.from_encoded_point(ec.SECP256R1(), reader_private_key_bytes)
+                lock_signature = public_key.sign(
+                    bytes_data,
+                    ec.ECDSA(hashes.SHA256())
+                )
+
                 structure = [
                     tlv8.Entry(40, lock_signature, tlv8.DataType.BYTES)
                 ]
