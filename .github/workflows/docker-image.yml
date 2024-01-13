@@ -1,0 +1,29 @@
+name: build and push server docker image
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 6'
+
+jobs:
+  buildx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      
+      - name: Login to DockerHub
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      
+      - name: Run Buildx
+        run: |
+          docker buildx build --platform linux/arm64,linux/arm/v8 -t tcousin/mqtt-homekey-lock-server:latest -t tcousin/mqtt-homekey-lock-server:$GITHUB_SHA --push . 
