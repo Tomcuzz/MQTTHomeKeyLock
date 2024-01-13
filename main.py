@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 import signal
@@ -10,12 +11,27 @@ from util.bfclf import BroadcastFrameContactlessFrontend
 from repository import Repository
 from service import Service
 
-# By default, this file is located in the same folder as the project
-CONFIGURATION_FILE_PATH = "configuration.json"
-
-
-def load_configuration(path=CONFIGURATION_FILE_PATH) -> dict:
-    return json.load(open(path, "r+"))
+def load_configuration() -> dict:
+    return {
+        "logging": {
+            "level":  int(os.getenv("LOG_LEVEL", 20)),
+        },
+        "nfc": {
+            "port":  str(os.getenv("NFC_PORT", "USB0")),
+            "driver": str(os.getenv("NFC_DRIVER", "pn532")),
+            "broadcast": (True if os.getenv("NFC_BROADCAST", "True") == "True" else False)
+        },
+        "hap": {
+            "port": int(os.getenv("HAP_PORT", 51926)),
+            "persist": str(os.getenv("HAP_PERSIST", "hap.state"))
+        },
+        "homekey": {
+            "persist": str(os.getenv("HOMEKEY_PERSIST", "homekey.json")),
+            "express": (True if os.getenv("HOMEKEY_EXPRESS", "True") == "True" else False),
+            "finish": str(os.getenv("HOMEKEY_FINISH", "black")),
+            "flow": str(os.getenv("HOMEKEY_FLOW", "fast")),
+        }
+    }
 
 
 def configure_logging(config: dict):

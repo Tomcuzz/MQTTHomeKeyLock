@@ -8,8 +8,17 @@ COPY . .
 # Define environment veriables
 ENV TZ="Europe/London"
 
-# Create Environment veriable logging level
-ENV LOG_LEVEL="INFO"
+# Set Homekit default variables
+ENV LOG_LEVEL="20"
+ENV NFC_PORT="USB0"
+ENV NFC_DRIVER="pn532"
+ENV NFC_BROADCAST="True"
+ENV HAP_PORT="51926"
+ENV HAP_PERSIST="hap.state"
+ENV HOMEKEY_PERSIST="homekey.json"
+ENV HOMEKEY_EXPRESS="True"
+ENV HOMEKEY_FINISH="black"
+ENV HOMEKEY_FLOW"="fast"
 
 #Update pip
 RUN pip install --upgrade pip
