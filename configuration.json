@@ -4,7 +4,7 @@
     },
 
     "nfc": {
-        "port": "usbserial-0001", 
+        "port": "USB0", 
         "driver": "pn532",
         "broadcast": true
     },
