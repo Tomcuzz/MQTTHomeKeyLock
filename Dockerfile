@@ -1,6 +1,8 @@
 # Start from the latest python base image
 FROM python:3.11
 
+VOLUME /persist
+
 WORKDIR /usr/app
 
 COPY . .
@@ -14,8 +16,8 @@ ENV NFC_PORT="USB0"
 ENV NFC_DRIVER="pn532"
 ENV NFC_BROADCAST="True"
 ENV HAP_PORT="51926"
-ENV HAP_PERSIST="hap.state"
-ENV HOMEKEY_PERSIST="homekey.json"
+ENV HAP_PERSIST="/persist/hap.state"
+ENV HOMEKEY_PERSIST="/persist/homekey.json"
 ENV HOMEKEY_EXPRESS="True"
 ENV HOMEKEY_FINISH="black"
 ENV HOMEKEY_FLOW="fast"

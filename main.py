@@ -23,10 +23,10 @@ def load_configuration() -> dict:
         },
         "hap": {
             "port": int(os.getenv("HAP_PORT", 51926)),
-            "persist": str(os.getenv("HAP_PERSIST", "hap.state"))
+            "persist": str(os.getenv("HAP_PERSIST", "/persist/hap.state"))
         },
         "homekey": {
-            "persist": str(os.getenv("HOMEKEY_PERSIST", "homekey.json")),
+            "persist": str(os.getenv("HOMEKEY_PERSIST", "/persist/homekey.json")),
             "express": (True if os.getenv("HOMEKEY_EXPRESS", "True") == "True" else False),
             "finish": str(os.getenv("HOMEKEY_FINISH", "black")),
             "flow": str(os.getenv("HOMEKEY_FLOW", "fast")),
