@@ -14,9 +14,6 @@ ENV LOG_LEVEL="INFO"
 #Update pip
 RUN pip install --upgrade pip
 
-#Install the required rust
-RUN apk add --update rust
-
 #Install the Python dependancies
 RUN pip install --no-cache-dir -r requirements.txt
 
