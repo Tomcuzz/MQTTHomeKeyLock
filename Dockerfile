@@ -18,7 +18,7 @@ ENV HAP_PERSIST="hap.state"
 ENV HOMEKEY_PERSIST="homekey.json"
 ENV HOMEKEY_EXPRESS="True"
 ENV HOMEKEY_FINISH="black"
-ENV HOMEKEY_FLOW"="fast"
+ENV HOMEKEY_FLOW="fast"
 
 #Update pip
 RUN pip install --upgrade pip
