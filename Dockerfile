@@ -10,8 +10,10 @@ COPY . .
 # Define environment veriables
 ENV TZ="Europe/London"
 
-# Set Homekit default variables
+# Set Log Level (10->DEBUG, 20->INFO, 30->WARNING, 50->ERROR, 60->CRITICAL)
 ENV LOG_LEVEL="20"
+
+# Set Homekit default variables
 ENV NFC_PORT="USB0"
 ENV NFC_DRIVER="pn532"
 ENV NFC_BROADCAST="True"
