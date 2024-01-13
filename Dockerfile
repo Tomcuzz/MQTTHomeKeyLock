@@ -3,9 +3,7 @@ FROM python:3.11
 
 WORKDIR /usr/app
 
-COPY requirements.txt requirements.txt
-
-COPY ./apple-home-key-reader .
+COPY ./apple-home-key-reader/* .
 
 # Define environment veriables
 ENV TZ="Europe/London"
