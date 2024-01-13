@@ -26,4 +26,4 @@ jobs:
       
       - name: Run Buildx
         run: |
-          docker buildx build --platform linux/arm64,linux/arm/v8 -t tcousin/mqtt-homekey-lock-server:latest -t tcousin/mqtt-homekey-lock-server:$GITHUB_SHA --push . 
+          docker buildx build --platform linux/arm64 -t tcousin/mqtt-homekey-lock-server:latest -t tcousin/mqtt-homekey-lock-server:$GITHUB_SHA --push . 
