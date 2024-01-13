@@ -123,15 +123,15 @@ class Service:
             return
 
         if not isinstance(target, ISODEPTag):
-            log.info(
+            log.debug(
                 f"Found non-ISODEP Tag with UID: {target.identifier.hex().upper()}"
             )
             while self.clf.sense(RemoteTarget("106A")) is not None:
-                log.info("Waiting for target to leave the field...")
+                log.debug("Waiting for target to leave the field...")
                 time.sleep(0.5)
             return
 
-        log.info(f"Got NFC tag {target}")
+        log.debug(f"Got NFC tag {target}")
 
         tag = ISO7816Tag(target)
         try:
@@ -153,7 +153,7 @@ class Service:
             log.info(f"Authenticated endpoint via {result_flow!r}: {endpoint}")
 
             end = time.monotonic()
-            log.info(f"Transaction took {(end - start) * 1000} ms")
+            log.debug(f"Transaction took {(end - start) * 1000} ms")
 
             if endpoint is not None:
                 self.on_endpoint_authenticated(endpoint)
@@ -281,7 +281,7 @@ class Service:
         result = pack_into_base64_string(
             HardwareFinishResponse(color=self.hardware_finish_color)
         )
-        log.info(f"get_hardware_finish={result}")
+        log.debug(f"get_hardware_finish={result}")
         return result
 
     def get_nfc_access_supported_configuration(self):
@@ -290,19 +290,19 @@ class Service:
                 number_of_issuer_keys=16, number_of_inactive_credentials=16
             )
         )
-        log.info(f"TODO get_nfc_access_supported_configuration={result}")
+        log.debug(f"TODO get_nfc_access_supported_configuration={result}")
         return result
 
     def get_nfc_access_control_point(self):
-        log.info("get_nfc_access_control_point")
+        log.debug("get_nfc_access_control_point")
         return ""
 
     def set_nfc_access_control_point(self, value):
-        log.info(f"<-- (B64) {value}")
+        log.debug(f"<-- (B64) {value}")
         request_packed_tlv = unpack_from_base64_string(value)
-        log.info(f"<-- (TLV) {request_packed_tlv.hex()}")
+        log.debug(f"<-- (TLV) {request_packed_tlv.hex()}")
         request: ControlPointRequest = ControlPointRequest.unpack(request_packed_tlv)
-        log.info(f"<-- (OBJ) {request}")
+        log.debug(f"<-- (OBJ) {request}")
         operation = request.operation
         response = ControlPointResponse()
 
@@ -328,13 +328,13 @@ class Service:
                 if operation == Operation.REMOVE
                 else None
             )
-        log.info(f"--> (OBJ) {response}")
+        log.debug(f"--> (OBJ) {response}")
         packed_tlv_response = response.pack()
-        log.info(f"--> (TLV) {packed_tlv_response.hex()}")
+        log.debug(f"--> (TLV) {packed_tlv_response.hex()}")
         response = pack_into_base64_string(packed_tlv_response)
-        log.info(f"--> (B64) {response}")
+        log.debug(f"--> (B64) {response}")
         return response
 
     def get_configuration_state(self):
-        log.info("get_configuration_state")
+        log.debug("get_configuration_state")
         return 0
