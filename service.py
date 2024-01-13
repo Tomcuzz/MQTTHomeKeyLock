@@ -182,7 +182,10 @@ class Service:
             )
 
         while self._run_flag:
-            self._read_homekey()
+            try:
+                self._read_homekey()
+            except TimeoutError:
+                log.error("Recieved Timeout error")
 
     def get_reader_key(self, request: ReaderKeyRequest) -> ReaderKeyResponse:
         response = ReaderKeyResponse(
