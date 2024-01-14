@@ -23,21 +23,21 @@ class MqttConfig:
 
     @classmethod
     def from_dict(cls, config: dict):
-        config = MqttConfig()
-        config.mqtt_server = config.get("server", "")
-        config.mqtt_port = config.get("port", 1883)
-        config.mqtt_client_id = config.get("client_id", "mqtt-homekey-lock")
-        config.mqtt_auth = config.get("auth", False)
-        config.mqtt_user = config.get("user", "")
-        config.mqtt_pass = config.get("pass", "")
-        config.mqtt_ha_enable = config.get("hass_enabled", True)
-        config.lock_id = config.get("lock_id", "0")
-        config.mqtt_topic_prefix = config.get("prefix_topic", "")
-        config.mqtt_ha_status_topic = config.get("hass_status_topic", "homeassistant/status")
-        config.mqtt_oneline_topic = self.mqtt_topic_prefix + "/" + self.lock_id + "/online"
-        config.mqtt_state_topic = self.mqtt_topic_prefix + "/" + self.lock_id + "/mqtt_state_topic"
-        config.mqtt_command_topic = self.mqtt_topic_prefix + "/" + self.lock_id + "/command_topic"
-        return config
+        return MqttConfig(
+            mqtt_server = config.get("server", ""),
+            mqtt_port = config.get("port", 1883),
+            mqtt_client_id = config.get("client_id", "mqtt-homekey-lock"),
+            mqtt_auth = config.get("auth", False),
+            mqtt_user = config.get("user", ""),
+            mqtt_pass = config.get("pass", ""),
+            mqtt_ha_enable = config.get("hass_enabled", True),
+            lock_id = config.get("lock_id", "0"),
+            mqtt_topic_prefix = config.get("prefix_topic", ""),
+            mqtt_ha_status_topic = config.get("hass_status_topic", "homeassistant/status"),
+            mqtt_oneline_topic = self.mqtt_topic_prefix + "/" + self.lock_id + "/online",
+            mqtt_state_topic = self.mqtt_topic_prefix + "/" + self.lock_id + "/mqtt_state_topic",
+            mqtt_command_topic = self.mqtt_topic_prefix + "/" + self.lock_id + "/command_topic"
+        )
 
 class Mqtt:
     def __init__(
