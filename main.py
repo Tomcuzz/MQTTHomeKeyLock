@@ -34,9 +34,9 @@ def load_configuration() -> dict:
         },
         "mqtt": {
             "server": str(os.getenv("MQTT_SERVER", "192.168.1.2")),
-            "port": int(os.getenv("MQTT_PORT", 1883)),
+            "port": int(os.getenv("MQTT_PORT", "1883")),
             "client_id": str(os.getenv("MQTT_CLIENT_ID", "mqtt-homekey-lock")),
-            "auth": (True if os.getenv("MQTT_AUTH", "True") == "True" else False),
+            "auth": (True if os.getenv("MQTT_AUTH", "False") == "True" else False),
             "user": str(os.getenv("MQTT_USER", "")),
             "pass": str(os.getenv("MQTT_PASS", "")),
             "lock_id": str(os.getenv("MQTT_LOCK_ID", "0")),

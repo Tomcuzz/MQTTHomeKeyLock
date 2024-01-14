@@ -24,6 +24,18 @@ ENV HOMEKEY_EXPRESS="True"
 ENV HOMEKEY_FINISH="black"
 ENV HOMEKEY_FLOW="fast"
 
+# Set MQTT default variables
+ENV MQTT_SERVER="192.168.1.2"
+ENV MQTT_PORT="1883"
+ENV MQTT_CLIENT_ID"="mqtt-homekey-lock"
+ENV MQTT_AUTH="False"
+ENV MQTT_USER=""
+ENV MQTT_PASS=""
+ENV MQTT_LOCK_ID="0"
+ENV MQTT_PREFIX_TOPIC="mqtt-homekey-lock"
+ENV MQTT_HASS_ENABLED="True"
+ENV MQTT_STATUS_TOPIC="homeassistant/status"
+
 #Update pip
 RUN pip install --upgrade pip
 
