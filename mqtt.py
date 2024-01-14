@@ -34,9 +34,9 @@ class MqttConfig:
             lock_id = config.get("lock_id", "0"),
             mqtt_topic_prefix = config.get("prefix_topic", ""),
             mqtt_ha_status_topic = config.get("hass_status_topic", "homeassistant/status"),
-            mqtt_oneline_topic = self.mqtt_topic_prefix + "/" + self.lock_id + "/online",
-            mqtt_state_topic = self.mqtt_topic_prefix + "/" + self.lock_id + "/mqtt_state_topic",
-            mqtt_command_topic = self.mqtt_topic_prefix + "/" + self.lock_id + "/command_topic"
+            mqtt_oneline_topic = config.get("prefix_topic", "") + "/" + config.get("lock_id", "0") + "/online",
+            mqtt_state_topic = config.get("prefix_topic", "") + "/" + config.get("lock_id", "0") + "/mqtt_state_topic",
+            mqtt_command_topic = config.get("prefix_topic", "") + "/" + config.get("lock_id", "0") + "/command_topic"
         )
 
 class Mqtt:
