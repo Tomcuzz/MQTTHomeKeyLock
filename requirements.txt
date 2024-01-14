@@ -3,3 +3,4 @@ HAP-python[QRCode]==4.9.*
 cryptography==41.0.*
 nfcpy==1.0.*
 cbor2==5.4.*
+paho-mqtt>=1.6.1
