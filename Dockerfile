@@ -27,7 +27,7 @@ ENV HOMEKEY_FLOW="fast"
 # Set MQTT default variables
 ENV MQTT_SERVER="192.168.1.2"
 ENV MQTT_PORT="1883"
-ENV MQTT_CLIENT_ID"="mqtt-homekey-lock"
+ENV MQTT_CLIENT_ID="mqtt-homekey-lock"
 ENV MQTT_AUTH="False"
 ENV MQTT_USER=""
 ENV MQTT_PASS=""
