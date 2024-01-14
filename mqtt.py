@@ -73,7 +73,7 @@ class Mqtt:
     def setup_subscriptions(self):
         def on_message(client, userdata, msg):
             log.debug("Message recieved on topic: " + msg.topic + " With Message: " + msg.payload.decode())
-            elif msg.topic == self.config.mqtt_command_topic:
+            if msg.topic == self.config.mqtt_command_topic:
                 self.update_callback((True if msg.payload.decode() == "lock" else False)
             elif msg.topic == self.config.mqtt_ha_status_topic:
                 self.publish_hass_config()
