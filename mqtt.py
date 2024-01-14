@@ -17,6 +17,7 @@ class MqttConfig:
     mqtt_ha_enable: bool
     lock_id: str
     mqtt_topic_prefix: str
+    mqtt_ha_status_topic: str
     mqtt_oneline_topic: str
     mqtt_state_topic: str
     mqtt_command_topic: str
