@@ -61,7 +61,7 @@ def configure_logging(config: dict):
 
 def configure_hap_accessory(config: dict, mqtt: Mqtt, homekey_service=None):
     driver = AccessoryDriver(port=config["port"], persist_file=config["persist"])
-    accessory = Lock(driver, "NFC Lock", service=homekey_service)
+    accessory = Lock(driver, "NFC Lock", service=homekey_service, mqtt=mqtt)
     driver.add_accessory(accessory=accessory)
     return driver, accessory
 
