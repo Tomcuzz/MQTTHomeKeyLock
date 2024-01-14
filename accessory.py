@@ -4,6 +4,7 @@ from pyhap.accessory import Accessory
 from pyhap.const import CATEGORY_DOOR_LOCK
 
 from service import Service
+from mqtt import Mqtt
 
 log = logging.getLogger()
 
@@ -12,7 +13,7 @@ log = logging.getLogger()
 class Lock(Accessory):
     category = CATEGORY_DOOR_LOCK
 
-    def __init__(self, *args, service: Service, **kwargs):
+    def __init__(self, *args, service: Service, mqtt:Mqtt, **kwargs):
         super().__init__(*args, **kwargs)
         self._last_client_public_keys = None
 
@@ -23,6 +24,9 @@ class Lock(Accessory):
         self.service.on_endpoint_authenticated = self.on_endpoint_authenticated
         self.add_lock_service()
         self.add_nfc_access_service()
+
+        self.mqtt = mqtt
+        self.mqtt.update_callback = self.mqtt_update_callback
 
     def on_endpoint_authenticated(self, endpoint):
         self._lock_target_state = 0 if self._lock_current_state else 1
@@ -119,10 +123,14 @@ class Lock(Accessory):
         log.info("get_lock_target_state")
         return self._lock_target_state
 
-    def set_lock_target_state(self, value):
+    def mqtt_update_callback(self, set_locked:bool):
+        self.set_lock_target_state(int(set_locked))
+
+    def set_lock_target_state(self, value): #Value is 1 for locked
         log.info(f"set_lock_target_state {value}")
         self._lock_target_state = self._lock_current_state = value
         self.lock_current_state.set_value(self._lock_current_state, should_notify=True)
+        self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
         return self._lock_target_state
 
     def get_lock_version(self):

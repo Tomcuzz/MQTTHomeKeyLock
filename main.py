@@ -10,11 +10,12 @@ from accessory import Lock
 from util.bfclf import BroadcastFrameContactlessFrontend
 from repository import Repository
 from service import Service
+from mqtt import Mqtt
 
 def load_configuration() -> dict:
     return {
         "logging": {
-            "level":  int(os.getenv("LOG_LEVEL", 20)),
+            "level":  int(os.getenv("LOG_LEVEL", 20))
         },
         "nfc": {
             "port":  str(os.getenv("NFC_PORT", "USB0")),
@@ -29,9 +30,20 @@ def load_configuration() -> dict:
             "persist": str(os.getenv("HOMEKEY_PERSIST", "/persist/homekey.json")),
             "express": (True if os.getenv("HOMEKEY_EXPRESS", "True") == "True" else False),
             "finish": str(os.getenv("HOMEKEY_FINISH", "black")),
-            "flow": str(os.getenv("HOMEKEY_FLOW", "fast")),
+            "flow": str(os.getenv("HOMEKEY_FLOW", "fast"))
+        },
+        "mqtt": {
+            "server": str(os.getenv("MQTT_SERVER", "192.168.1.2")),
+            "port": int(os.getenv("MQTT_PORT", 1883)),
+            "client_id": str(os.getenv("MQTT_CLIENT_ID", "mqtt-homekey-lock")),
+            "auth": (True if os.getenv("MQTT_AUTH", "True") == "True" else False),
+            "user": str(os.getenv("MQTT_USER", "")),
+            "pass": str(os.getenv("MQTT_PASS", "")),
+            "lock_id": str(os.getenv("MQTT_LOCK_ID", "0")),
+            "prefix_topic": str(os.getenv("MQTT_PREFIX_TOPIC", "mqtt-homekey-lock")),
+            "hass_enabled": (True if os.getenv("MQTT_HASS_ENABLED", "True") == "True" else False),
+            "hass_status_topic": str(os.getenv("MQTT_STATUS_TOPIC", "homeassistant/status"))
         }
-    }
 
 
 def configure_logging(config: dict):
@@ -46,7 +58,7 @@ def configure_logging(config: dict):
     return log
 
 
-def configure_hap_accessory(config: dict, homekey_service=None):
+def configure_hap_accessory(config: dict, mqtt: Mqtt homekey_service=None):
     driver = AccessoryDriver(port=config["port"], persist_file=config["persist"])
     accessory = Lock(driver, "NFC Lock", service=homekey_service)
     driver.add_accessory(accessory=accessory)
@@ -78,7 +90,8 @@ def main():
 
     nfc_device = configure_nfc_device(config["nfc"])
     homekey_service = configure_homekey_service(config["homekey"], nfc_device)
-    hap_driver, _ = configure_hap_accessory(config["hap"], homekey_service)
+    mqtt = Mqtt(config["mqtt"])
+    hap_driver, _ = configure_hap_accessory(config["hap"], homekey_service, mqtt)
 
     for s in (signal.SIGINT, signal.SIGTERM):
         signal.signal(
