@@ -1,4 +1,5 @@
 import logging
+from dataclasses import dataclass
 
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt_client
