@@ -44,6 +44,7 @@ def load_configuration() -> dict:
             "hass_enabled": (True if os.getenv("MQTT_HASS_ENABLED", "True") == "True" else False),
             "hass_status_topic": str(os.getenv("MQTT_STATUS_TOPIC", "homeassistant/status"))
         }
+    }
 
 
 def configure_logging(config: dict):
