@@ -139,5 +139,5 @@ class Mqtt:
             pub_state = "unlocking"
         elif target_locked == True and current_locked == False:
             pub_state = "locking"
-        self.client.publish(self.config.mqtt_state_topic, pub_state)
+        self.client.publish(self.config.mqtt_state_topic, pub_state, 0, True)
     
