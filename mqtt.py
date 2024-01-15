@@ -41,7 +41,8 @@ class MqttConfig:
             mqtt_ha_status_topic = config.get("hass_status_topic", "homeassistant/status"),
             mqtt_oneline_topic = config.get("prefix_topic", "") + "/" + config.get("lock_id", "0") + "/online",
             mqtt_state_topic = config.get("prefix_topic", "") + "/" + config.get("lock_id", "0") + "/mqtt_state_topic",
-            mqtt_command_topic = config.get("prefix_topic", "") + "/" + config.get("lock_id", "0") + "/command_topic"
+            mqtt_command_topic = config.get("prefix_topic", "") + "/" + config.get("lock_id", "0") + "/command_topic",
+            mqtt_key_id_authed_topic = config.get("prefix_topic", "") + "/" + config.get("lock_id", "0") + "/key_id_authed"
         )
 
 class Mqtt:
@@ -140,4 +141,7 @@ class Mqtt:
         elif target_locked == True and current_locked == False:
             pub_state = "locking"
         self.client.publish(self.config.mqtt_state_topic, pub_state, 0, True)
+    
+    def device_passed_auth(self, key_id:str):
+        self.client.publish(self.config.mqtt_key_id_authed_topic, key_id)
     

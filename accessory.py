@@ -30,6 +30,7 @@ class Lock(Accessory):
         self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
 
     def on_endpoint_authenticated(self, endpoint):
+        self.mqtt.device_passed_auth(endpoint.id)
         self._lock_target_state = 0 if self._lock_current_state else 1
         log.info(
             f"Toggling lock state due to endpoint authentication event {self._lock_target_state} -> {self._lock_current_state} {endpoint}"
