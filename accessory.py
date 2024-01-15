@@ -27,6 +27,7 @@ class Lock(Accessory):
 
         self.mqtt = mqtt
         self.mqtt.update_callback = self.mqtt_update_callback
+        self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
 
     def on_endpoint_authenticated(self, endpoint):
         self._lock_target_state = 0 if self._lock_current_state else 1
