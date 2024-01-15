@@ -25,6 +25,7 @@ class MqttConfig:
     mqtt_oneline_topic: str
     mqtt_state_topic: str
     mqtt_command_topic: str
+    mqtt_key_id_authed_topic: str
 
     @classmethod
     def from_dict(cls, config: dict):
