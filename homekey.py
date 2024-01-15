@@ -99,14 +99,14 @@ def get_key_material_generator(
     shared_key = reader_ephemeral_private_key.exchange(
         ec.ECDH(), endpoint_ephemeral_public_key
     )
-    log.info(f"{shared_key.hex()=}")
+    log.debug(f"{shared_key.hex()=}")
 
     derived_key = X963KDF(
         algorithm=hashes.SHA256(),
         length=32,
         sharedinfo=transaction_identifier,
     ).derive(shared_key)
-    log.info(f"{derived_key.hex()=}")
+    log.debug(f"{derived_key.hex()=}")
 
     def generate_keying_material(context: Context, key_size: int):
         info_material = (
@@ -121,7 +121,7 @@ def get_key_material_generator(
         )
 
         info = pack(info_material)
-        log.info(f"{info.hex()=}")
+        log.debug(f"{info.hex()=}")
 
         material = HKDF(
             algorithm=hashes.SHA256(),
@@ -169,11 +169,11 @@ def fast_auth(
     command = ISO7816Command(
         cla=0x80, ins=0x80, p1=flags[0], p2=flags[1], data=command_data, le=None
     )
-    log.info(f"AUTH0 CMD = {command}")
+    log.debug(f"AUTH0 CMD = {command}")
     response = tag.transceive(command)
     if response.sw != (0x90, 0x00):
         raise ProtocolError(f"AUTH0 INVALID STATUS {response.sw}")
-    log.info(f"AUTH0 RES = {response}")
+    log.debug(f"AUTH0 RES = {response}")
     tlv_array = TLV.unpack_array(response.data)
 
     endpoint_ephemeral_public_key_tag = get_tlv_tag(tlv_array, 0x86)
@@ -196,7 +196,7 @@ def fast_auth(
     endpoint = None
     # FAST gives us no way to find out the identity of endpoint from the data for security reasons,
     # so we have to iterate over all provisioned endpoints and hope that it's there
-    log.info("Searching for an endpoint with matching cryptogram...")
+    log.debug("Searching for an endpoint with matching cryptogram...")
     for endpoint in get_endpoints_from_issuers(issuers):
         k_persistent = endpoint.persistent_key
         endpoint_public_key_bytes = endpoint.public_key
@@ -233,11 +233,11 @@ def fast_auth(
         kmac = hkdf[key_size * 2 : key_size * 3]
         krmac = hkdf[key_size * 3 :]
         calculated_cryptogram = kcmac
-        log.info(
+        log.debug(
             f"Endpoint({endpoint.id.hex()}): {returned_cryptogram.hex()=} ? {calculated_cryptogram.hex()=}"
         )
         if returned_cryptogram == calculated_cryptogram:
-            log.info(
+            log.debug(
                 f"Cryptograms match for Endpoint({endpoint.id.hex()}): {kcmac.hex()=} {kenc.hex()=} {kmac.hex()=} {krmac.hex()=};"
             )
             return (
@@ -272,7 +272,7 @@ def standard_auth(
     reader_ephemeral_public_key_x, _ = get_ec_key_public_points(
         reader_ephemeral_public_key
     )
-    log.info(
+    log.debug(
         f"{endpoint_ephemeral_public_key_x.hex()=} {reader_ephemeral_public_key_x.hex()=}"
     )
 
@@ -284,22 +284,22 @@ def standard_auth(
         TLV(0x93, value=READER_CONTEXT),
     ]
     authentication_hash_input = pack(authentication_hash_input_material)
-    log.info(f"{authentication_hash_input.hex()=}")
+    log.debug(f"{authentication_hash_input.hex()=}")
 
     signature = reader_private_key.sign(
         authentication_hash_input, ec.ECDSA(hashes.SHA256())
     )
-    log.info(f"{signature.hex()=} ({hex(len(signature))})")
+    log.debug(f"{signature.hex()=} ({hex(len(signature))})")
     x, y = decode_dss_signature(signature)
     signature_point_form = bytes([*x.to_bytes(32, "big"), *y.to_bytes(32, "big")])
-    log.info(f"{signature_point_form.hex()=} ({hex(len(signature_point_form))})")
+    log.debug(f"{signature_point_form.hex()=} ({hex(len(signature_point_form))})")
 
     data = TLV(0x9E, value=signature_point_form)
     command = ISO7816Command(cla=0x80, ins=0x81, p1=0x00, p2=0x00, data=data)
 
-    log.info(f"AUTH1 COMMAND {command}")
+    log.debug(f"AUTH1 COMMAND {command}")
     response = tag.transceive(command)
-    log.info(f"AUTH1 RESPONSE: {response}")
+    log.debug(f"AUTH1 RESPONSE: {response}")
     if response.sw != (0x90, 0x00):
         raise ProtocolError(f"AUTH1 INVALID STATUS {response.sw}")
 
@@ -314,24 +314,24 @@ def standard_auth(
     )
 
     k_persistent = get_key_material(context=Context.PERSISTENT, key_size=key_size * 2)
-    log.info(f"{k_persistent.hex()=}")
+    log.debug(f"{k_persistent.hex()=}")
 
     hkdf = get_key_material(context=Context.VOLATILE, key_size=key_size * 3)
-    log.info(f"{hkdf.hex()=}")
+    log.debug(f"{hkdf.hex()=}")
     kenc = hkdf[: key_size * 1]
     kmac = hkdf[key_size * 1 : key_size * 2]
     krmac = hkdf[key_size * 2 :]
-    log.info(f"{kenc.hex()=} {kmac.hex()=} {krmac.hex()=}")
+    log.debug(f"{kenc.hex()=} {kmac.hex()=} {krmac.hex()=}")
 
     secure = DigitalKeySecureContext(tag, kenc, kmac, krmac)
 
     try:
         response, secure.counter = secure.decrypt_response(response)
     except (AssertionError,):
-        log.info("AUTH1 COULD NOT DECRYPT RESPONSE")
+        log.debug("AUTH1 COULD NOT DECRYPT RESPONSE")
         return k_persistent, None, None
 
-    log.info(f"AUTH1 DECRYPTED RESPONSE: {response}")
+    log.debug(f"AUTH1 DECRYPTED RESPONSE: {response}")
 
     tlv_array = TLV.unpack_array(response.data)
 
@@ -343,7 +343,7 @@ def standard_auth(
     if device_identifier is None:
         raise ProtocolError("No device identifier in response at tag 0x4E")
 
-    log.info(f"{device_identifier.hex()=}")
+    log.debug(f"{device_identifier.hex()=}")
 
     endpoint = find_endpoint_by_id_in_issuers(issuers, device_identifier)
     if endpoint is None:
@@ -354,7 +354,7 @@ def standard_auth(
         endpoint.public_key
     )
 
-    log.info(f"{signature.hex()=}")
+    log.debug(f"{signature.hex()=}")
     signature = encode_dss_signature(
         int.from_bytes(signature[:32], "big"), int.from_bytes(signature[32:], "big")
     )
@@ -367,7 +367,7 @@ def standard_auth(
         TLV(0x93, value=DEVICE_CONTEXT),
     ]
     verification_hash_input = pack(verification_hash_input_material)
-    log.info(f"{verification_hash_input.hex()=}")
+    log.debug(f"{verification_hash_input.hex()=}")
 
     try:
         endpoint_public_key.verify(
@@ -410,9 +410,9 @@ def exchange_attestation(tag: ISO7816Tag, shared_secret: bytes):
         le=0x00,
         data=pack(TLV(0x53, value=envelope1_engagement_message)),
     )
-    log.info(f"ENVELOPE1 CMD = {envelope1_command}")
+    log.debug(f"ENVELOPE1 CMD = {envelope1_command}")
     envelope1_response = tag.transceive(envelope1_command)
-    log.info(f"ENVELOPE1 RES = {envelope1_response}")
+    log.debug(f"ENVELOPE1 RES = {envelope1_response}")
 
     envelope1_command_ndef = NDEFMessage.unpack(
         TLV.unpack(envelope1_command.data).value
@@ -482,9 +482,9 @@ def exchange_attestation(tag: ISO7816Tag, shared_secret: bytes):
     command = ISO7816Command(
         cla=0x00, ins=0xC3, p1=0x00, p2=0x00, data=envelope2_command_data, le=0x00
     )
-    log.info(f"ENVELOPE2 CMD = {command}")
+    log.debug(f"ENVELOPE2 CMD = {command}")
     response = tag.transceive(command)
-    log.info(f"ENVELOPE2 RES = {response}")
+    log.debug(f"ENVELOPE2 RES = {response}")
 
     data = response.data
 
@@ -492,9 +492,9 @@ def exchange_attestation(tag: ISO7816Tag, shared_secret: bytes):
         command = ISO7816Command(
             cla=0x00, ins=0xC0, p1=0x00, p2=0x00, data=None, le=response.sw2
         )
-        log.info(f"GET DATA CMD = {command}")
+        log.debug(f"GET DATA CMD = {command}")
         response = tag.transceive(command)
-        log.info(f"GET DATA RES = {response}")
+        log.debug(f"GET DATA RES = {response}")
         data += response.data
 
     endpoint_cbor_plaintext = iso18013secure.decrypt_message_from_endpoint(
@@ -515,10 +515,10 @@ def mailbox_exchange(
     command = ISO7816Command(
         cla=0x84, ins=0xC9, p1=0x00, p2=0x00, data=command_data, le=0x00
     )
-    log.info(f"EXCHANGE COMMAND {command}")
+    log.debug(f"EXCHANGE COMMAND {command}")
 
     response = secure.transceive(command)
-    log.info(f"EXCHANGE RESPONSE {response}")
+    log.debug(f"EXCHANGE RESPONSE {response}")
     if response.sw1 != 0x90:
         raise ProtocolError("Mailbox exchange failed")
     return response.data
@@ -526,21 +526,21 @@ def mailbox_exchange(
 
 def select_applet(tag: ISO7816Tag, applet=ISO7816Application.HOME_KEY):
     command = ISO7816.select_aid(applet)
-    log.info(f"SELECT CMD = {command}")
+    log.debug(f"SELECT CMD = {command}")
     response = tag.transceive(command)
     if response.sw != (0x90, 0x00):
         raise ProtocolError(
             f"Could not select {applet} {hex(response.sw1)} {hex(response.sw2)}"
         )
-    log.info(f"SELECT RES = {response}")
+    log.debug(f"SELECT RES = {response}")
     return response.data
 
 
 def control_flow(tag: ISO7816Tag, p1=0x01, p2=0x00):
     command = ISO7816Command(cla=0x80, ins=0x3C, p1=p1, p2=p2, data=None, le=None)
-    log.info(f"OP_CONTROL_FLOW CMD = {command}")
+    log.debug(f"OP_CONTROL_FLOW CMD = {command}")
     response = tag.transceive(command)
-    log.info(f"OP_CONTROL_FLOW RES = {response}")
+    log.debug(f"OP_CONTROL_FLOW RES = {response}")
     return response.data
 
 
@@ -566,13 +566,13 @@ def perform_authentication_flow(
     reader_public_key_x, reader_public_key_y = get_ec_key_public_points(
         reader_public_key
     )
-    log.info(
+    log.debug(
         f"Reader public key: x={reader_public_key_x.hex()} y={reader_public_key_y.hex()}"
     )
 
     reader_ephemeral_public_key = reader_ephemeral_private_key.public_key()
 
-    log.info(f"{protocol_version.hex()=}")
+    log.debug(f"{protocol_version.hex()=}")
 
     endpoint_ephemeral_public_key, endpoint, secure = fast_auth(
         tag=tag,
@@ -612,7 +612,7 @@ def perform_authentication_flow(
     if endpoint is not None and flow <= DigitalKeyFlow.STANDARD:
         return DigitalKeyFlow.STANDARD, None, endpoint
 
-    log.info(f"{attestation_exchange_common_secret.hex()=}")
+    log.debug(f"{attestation_exchange_common_secret.hex()=}")
     # Notify OS about intent of exchanging attestation, provide common secret
     operation = TLV(0x8E, value=TLV(0xC0, value=attestation_exchange_common_secret))
     _ = mailbox_exchange(secure, mailbox_operations=(operation,))
@@ -620,7 +620,7 @@ def perform_authentication_flow(
     control_flow(tag, 0x40, 0xA0)
 
     attestation_package = exchange_attestation(tag, attestation_exchange_common_secret)
-    log.info(f"{attestation_package=}")
+    log.debug(f"{attestation_package=}")
 
     attestation_package_cbor = cbor2.loads(attestation_package)
     issuer_signed_cbor = attestation_package_cbor["documents"][0]["issuerSigned"][
@@ -649,7 +649,7 @@ def perform_authentication_flow(
     try:
         public_key.verify(signature, data_to_sign)
     except InvalidSignature:
-        log.info("Attestation signature is invalid ")
+        log.warning("Attestation signature is invalid ")
         return DigitalKeyFlow.ATTESTATION, None, None
 
     log.info(f"Attestation signature is valid {endpoint}")
@@ -705,7 +705,7 @@ def read_homekey(
 
     response = select_applet(tag, applet=ISO7816Application.HOME_KEY)
     tlv_array = TLV.unpack_array(response)
-    log.info(f"{reader_identifier.hex()=}")
+    log.debug(f"{reader_identifier.hex()=}")
 
     versions_tag = get_tlv_tag(tlv_array, 0x5C)
     if versions_tag is None:
@@ -718,11 +718,11 @@ def read_homekey(
     for preferred_version in preferred_versions:
         if preferred_version in device_protocol_versions:
             protocol_version = preferred_version
-            log.info(f"Choosing preferred version {protocol_version}")
+            log.debug(f"Choosing preferred version {protocol_version}")
             break
     else:
         protocol_version = device_protocol_versions[0]
-        log.info(f"Defaulting to the newest available version {protocol_version}")
+        log.debug(f"Defaulting to the newest available version {protocol_version}")
     if protocol_version != b"\x02\x00":
         raise ProtocolError("Only officially supported protocol version is 0200")
 
