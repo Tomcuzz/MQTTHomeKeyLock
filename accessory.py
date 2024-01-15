@@ -13,7 +13,7 @@ log = logging.getLogger()
 class Lock(Accessory):
     category = CATEGORY_DOOR_LOCK
 
-    def __init__(self, mqtt:Mqtt, *args, service: Service, **kwargs):
+    def __init__(self, *args, mqtt:Mqtt, service: Service, **kwargs):
         super().__init__(*args, **kwargs)
         self._last_client_public_keys = None
 
