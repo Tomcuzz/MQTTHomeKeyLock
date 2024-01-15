@@ -24,7 +24,7 @@ def load_configuration() -> dict:
         },
         "hap": {
             "port": int(os.getenv("HAP_PORT", 51926)),
-            "persist": str(os.getenv("HAP_PERSIST", "/persist/hap.state"))
+            "persist": str(os.getenv("HAP_PERSIST", "/persist/hap.state")),
             "should_relock": (True if os.getenv("LOCK_SHOULD_RELOCK", "True") == "True" else False)
         },
         "homekey": {
