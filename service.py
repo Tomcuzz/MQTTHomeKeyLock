@@ -152,7 +152,7 @@ class Service:
             if new_issuers_state is not None and len(new_issuers_state):
                 self.repository.upsert_issuers(new_issuers_state)
 
-            log.info(f"Authenticated endpoint via {result_flow!r}: {endpoint}")
+            log.debug(f"Authenticated endpoint via {result_flow!r}: {endpoint}")
 
             end = time.monotonic()
             log.debug(f"Transaction took {(end - start) * 1000} ms")
