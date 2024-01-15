@@ -111,8 +111,8 @@ class Mqtt:
             "state_unlocked":"unlocked",
             "state_locking":"unlocking",
             "state_unlocking":"unlocking",
-            "state_topic": self.config.mqtt_lock_current_status,
-            "command_topic": self.config.mqtt_lock_target_status,
+            "state_topic": self.config.mqtt_state_topic,
+            "command_topic": self.config.mqtt_command_topic,
             "availability": {
                 "topic": self.config.mqtt_oneline_topic,
                 "payload_available":"online",
