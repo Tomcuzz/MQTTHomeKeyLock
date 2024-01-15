@@ -35,7 +35,8 @@ class Lock(Accessory):
     def on_endpoint_authenticated(self, endpoint):
         self.mqtt.device_passed_auth(endpoint.id)
         self._lock_target_state = 0 if self._lock_current_state else 1
-        log.info(
+        log.info(f"NFC Authed for device: {endpoint.id}")
+        log.debug(
             f"Toggling lock state due to endpoint authentication event {self._lock_target_state} -> {self._lock_current_state} {endpoint}"
         )
         self.lock_target_state.set_value(self._lock_target_state, should_notify=True)
