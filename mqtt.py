@@ -96,7 +96,7 @@ class Mqtt:
         hass_device_name = "mqtt-homekey-lock-" + self.config.lock_id
         hass_lock_name = "mqtt-homekey-lock-" + self.config.lock_id + "-lock"
         config = {
-            "name": hass_lock_name,
+            "name": "lock",
             "unique_id": hass_lock_name,
             "device":{
                 "identifiers": [
