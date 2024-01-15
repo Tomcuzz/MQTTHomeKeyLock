@@ -17,6 +17,9 @@ def load_configuration() -> dict:
         "logging": {
             "level":  int(os.getenv("LOG_LEVEL", 20))
         },
+        "lock": {
+            "should_relock": (True if os.getenv("LOCK_SHOULD_RELOCK", "True") == "True" else False)
+        },
         "nfc": {
             "port":  str(os.getenv("NFC_PORT", "USB0")),
             "driver": str(os.getenv("NFC_DRIVER", "pn532")),
@@ -61,7 +64,7 @@ def configure_logging(config: dict):
 
 def configure_hap_accessory(config: dict, mqtt: Mqtt, homekey_service=None):
     driver = AccessoryDriver(port=config["port"], persist_file=config["persist"])
-    accessory = Lock(driver, "NFC Lock", mqtt=mqtt, service=homekey_service)
+    accessory = Lock(driver, "NFC Lock", should_relock=config["lock"]["should_relock"], mqtt=mqtt, service=homekey_service)
     driver.add_accessory(accessory=accessory)
     return driver, accessory
 

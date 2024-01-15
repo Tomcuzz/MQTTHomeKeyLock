@@ -23,6 +23,7 @@ ENV HOMEKEY_PERSIST="/persist/homekey.json"
 ENV HOMEKEY_EXPRESS="True"
 ENV HOMEKEY_FINISH="black"
 ENV HOMEKEY_FLOW="fast"
+ENV LOCK_SHOULD_RELOCK="True"
 
 # Set MQTT default variables
 ENV MQTT_SERVER="192.168.1.2"

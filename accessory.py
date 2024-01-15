@@ -1,4 +1,5 @@
 import logging
+import time
 
 from pyhap.accessory import Accessory
 from pyhap.const import CATEGORY_DOOR_LOCK
@@ -13,7 +14,7 @@ log = logging.getLogger()
 class Lock(Accessory):
     category = CATEGORY_DOOR_LOCK
 
-    def __init__(self, *args, mqtt:Mqtt, service: Service, **kwargs):
+    def __init__(self, *args, should_relock:bool, mqtt:Mqtt, service: Service, **kwargs):
         super().__init__(*args, **kwargs)
         self._last_client_public_keys = None
 
@@ -28,6 +29,8 @@ class Lock(Accessory):
         self.mqtt = mqtt
         self.mqtt.update_callback = self.mqtt_update_callback
         self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
+        
+        self.should_relock = should_relock
 
     def on_endpoint_authenticated(self, endpoint):
         self.mqtt.device_passed_auth(endpoint.id)
@@ -36,8 +39,17 @@ class Lock(Accessory):
             f"Toggling lock state due to endpoint authentication event {self._lock_target_state} -> {self._lock_current_state} {endpoint}"
         )
         self.lock_target_state.set_value(self._lock_target_state, should_notify=True)
+        self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
         self._lock_current_state = self._lock_target_state
         self.lock_current_state.set_value(self._lock_current_state, should_notify=True)
+        self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
+        if self.should_relock and not bool(self._lock_target_state):
+            time.sleep(1)
+            self._lock_target_state = 1
+            self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
+            self._lock_current_state = 1
+            self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
+
 
     def add_preload_service(self, service, chars=None, unique_id=None):
         """Create a service with the given name and add it to this acc."""
