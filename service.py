@@ -186,6 +186,8 @@ class Service:
         while self._run_flag:
             try:
                 self._read_homekey()
+            except TimeoutError:
+                log.warning("Recieved Timeout error")
             except clf.TimeoutError:
                 log.warning("Recieved Timeout error")
             except Type4TagCommandError:
