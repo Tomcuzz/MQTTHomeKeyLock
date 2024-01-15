@@ -4,7 +4,7 @@ import time
 import os
 from operator import attrgetter
 from nfc.tag.tt4 import Type4TagCommandError
-from nfc.clf import TransmissionError
+from nfc import clf
 
 from entity import (
     Issuer,
@@ -186,11 +186,11 @@ class Service:
         while self._run_flag:
             try:
                 self._read_homekey()
-            except TimeoutError:
+            except clf.TimeoutError:
                 log.warning("Recieved Timeout error")
             except Type4TagCommandError:
                 log.warning("Recieved Type4TagCommandError")
-            except TransmissionError:
+            except clf.TransmissionError:
                 log.warning("Recieved TransmissionError")
 
     def get_reader_key(self, request: ReaderKeyRequest) -> ReaderKeyResponse:
