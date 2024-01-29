@@ -48,4 +48,4 @@ EXPOSE 51926
 # Create health check to check / url
 #HEALTHCHECK --interval=5m --timeout=3s --start-period=10s --retries=3 CMD curl -f http://localhost:8080/ || exit 1
 
-CMD ["python3", "./main.py"]
+CMD ["python3", "./code/main.py"]
