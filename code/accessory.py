@@ -1,3 +1,5 @@
+"""Module to handle hap protocol."""
+
 import logging
 import time
 
@@ -12,6 +14,7 @@ log = logging.getLogger()
 
 # Lock class performs no logic, forwarding requests to Service class
 class Lock(Accessory):
+    """Class to handle hap nfc lock."""
     category = CATEGORY_DOOR_LOCK
 
     def __init__(self, *args, should_relock:bool, mqtt:Mqtt, service: Service, **kwargs):
@@ -28,29 +31,34 @@ class Lock(Accessory):
 
         self.mqtt = mqtt
         self.mqtt.update_callback = self.mqtt_update_callback
-        self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
-        
+        self.mqtt.update_state(target_locked=bool(self._lock_target_state),
+                               current_locked=bool(self._lock_current_state))
+
         self.should_relock = should_relock
 
     def on_endpoint_authenticated(self, endpoint):
+        """Handle lock authentication."""
         endpoint_id = endpoint.id.hex()
         self.mqtt.device_passed_auth(endpoint_id)
         self._lock_target_state = 0 if self._lock_current_state else 1
-        log.info(f"NFC Authed for device: {endpoint_id}")
-        log.debug(
-            f"Toggling lock state due to endpoint authentication event {self._lock_target_state} -> {self._lock_current_state} {endpoint}"
-        )
+        log.info("NFC Authed for device: %s", endpoint_id)
+        log.debug("Toggling lock state due to endpoint authentication event %s -> %s %s",
+                  self._lock_target_state, self._lock_current_state, endpoint)
         self.lock_target_state.set_value(self._lock_target_state, should_notify=True)
-        self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
+        self.mqtt.update_state(target_locked=bool(self._lock_target_state),
+                               current_locked=bool(self._lock_current_state))
         self._lock_current_state = self._lock_target_state
         self.lock_current_state.set_value(self._lock_current_state, should_notify=True)
-        self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
+        self.mqtt.update_state(target_locked=bool(self._lock_target_state),
+                               current_locked=bool(self._lock_current_state))
         if self.should_relock and not bool(self._lock_target_state):
             time.sleep(1)
             self._lock_target_state = 1
-            self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
+            self.mqtt.update_state(target_locked=bool(self._lock_target_state),
+                                   current_locked=bool(self._lock_current_state))
             self._lock_current_state = 1
-            self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
+            self.mqtt.update_state(target_locked=bool(self._lock_target_state),
+                                   current_locked=bool(self._lock_current_state))
 
 
     def add_preload_service(self, service, chars=None, unique_id=None):
@@ -71,6 +79,7 @@ class Lock(Accessory):
         return service
 
     def add_info_service(self):
+        """Add info service for hap."""
         serv_info = self.driver.loader.get_service("AccessoryInformation")
         serv_info.configure_char("Name", value=self.display_name)
         serv_info.configure_char("SerialNumber", value="default")
@@ -81,6 +90,7 @@ class Lock(Accessory):
         self.add_service(serv_info)
 
     def add_lock_service(self):
+        """Add lock service to homekit."""
         self.service_lock_mechanism = self.add_preload_service("LockMechanism")
 
         self.lock_current_state = self.service_lock_mechanism.configure_char(
@@ -107,6 +117,7 @@ class Lock(Accessory):
         )
 
     def add_nfc_access_service(self):
+        """Add nfc access service."""
         self.service_nfc = self.add_preload_service("NFCAccess")
 
         self.char_nfc_access_supported_configuration = self.service_nfc.configure_char(
@@ -132,56 +143,69 @@ class Lock(Accessory):
         self.service.update_hap_pairings(client_public_keys)
 
     def get_lock_current_state(self):
+        """Get lock current state."""
         log.info("get_lock_current_state")
         return self._lock_current_state
 
     def get_lock_target_state(self):
+        """Handle getting lock current target state."""
         log.info("get_lock_target_state")
         return self._lock_target_state
 
     def mqtt_update_callback(self, set_locked:bool):
+        """Set the mqtt call back when mqtt updates the state."""
         self.set_lock_target_state(int(set_locked))
 
     def set_lock_target_state(self, value): #Value is 1 for locked
-        log.info(f"set_lock_target_state {value}")
+        """Set the locks taget state."""
+        log.info("set_lock_target_state %s", value)
         self._lock_target_state = self._lock_current_state = value
         self.lock_current_state.set_value(self._lock_current_state, should_notify=True)
-        self.mqtt.update_state(target_locked=bool(self._lock_target_state), current_locked=bool(self._lock_current_state))
+        self.mqtt.update_state(target_locked=bool(self._lock_target_state),
+                               current_locked=bool(self._lock_current_state))
         return self._lock_target_state
 
     def get_lock_version(self):
+        """Get lock version."""
         log.info("get_lock_version")
         return ""
 
     def set_lock_control_point(self, value):
-        log.info(f"set_lock_control_point: {value}")
+        """Set the lock control point."""
+        log.info("set_lock_control_point: %s", value)
 
     # All methods down here are forwarded to Service
     def get_hardware_finish(self):
+        """Return the hardware finish that the card should use."""
         self._update_hap_pairings()
         log.info("get_hardware_finish")
         return self.service.get_hardware_finish()
 
     def get_nfc_access_supported_configuration(self):
+        """Set the nfs access supported configuration."""
         self._update_hap_pairings()
         log.info("get_nfc_access_supported_configuration")
         return self.service.get_nfc_access_supported_configuration()
 
     def get_nfc_access_control_point(self):
+        """Return the nfs access control point."""
         self._update_hap_pairings()
         log.info("get_nfc_access_control_point")
         return self.service.get_nfc_access_control_point()
 
     def set_nfc_access_control_point(self, value):
+        """Set the nfs access control point."""
         self._update_hap_pairings()
-        log.info(f"set_nfc_access_control_point {value}")
+        log.info("set_nfc_access_control_point %s", value)
         return self.service.set_nfc_access_control_point(value)
 
     def get_configuration_state(self):
+        """Return configuration state."""
         self._update_hap_pairings()
         log.info("get_configuration_state")
         return self.service.get_configuration_state()
 
     @property
     def clients(self):
+        """Return paired clients."""
         return self.driver.state.paired_clients
