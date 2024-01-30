@@ -5,3 +5,4 @@ nfcpy==1.0.*
 cbor2==5.4.*
 paho-mqtt>=1.6.1
 prometheus-client
+pyhap
