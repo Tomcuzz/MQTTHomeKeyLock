@@ -30,6 +30,12 @@ Configuration is done via a Docker Environment Variables, with the following con
             <td>"20"</td>
         </tr>
         <tr>
+            <td>Name</td>
+            <td>LOCK_NAME</td>
+            <td>A lock name to be used to identify the lock in MQTT and HomeKit</td>
+            <td>"NFC_LOCK"</td>
+        </tr>
+        <tr>
             <td rowspan=3>NFC</td>
             <td>NFC_PORT</td>
             <td>Path to serial port of the connected NFC module</td>
@@ -84,7 +90,7 @@ Configuration is done via a Docker Environment Variables, with the following con
             <td>"True"</td>
         </tr>
         <tr>
-            <td rowspan=10>MQTT</td>
+            <td rowspan=9>MQTT</td>
             <td>MQTT_SERVER</td>
             <td>The MQTT Server to post updates to</td>
             <td>"192.168.1.2"</td>
@@ -113,11 +119,6 @@ Configuration is done via a Docker Environment Variables, with the following con
             <td>MQTT_PASS</td>
             <td>The password that should be used when connecting to MQTT</td>
             <td>""</td>
-        </tr>
-        <tr>
-            <td>MQTT_LOCK_ID</td>
-            <td>A lock ID to be used to identify the lock in MQTT</td>
-            <td>"0"</td>
         </tr>
         <tr>
             <td>MQTT_PREFIX_TOPIC</td>

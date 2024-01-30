@@ -42,7 +42,7 @@ def load_configuration() -> dict:
             "auth": (True if os.getenv("MQTT_AUTH", "False") == "True" else False),
             "user": str(os.getenv("MQTT_USER", "")),
             "pass": str(os.getenv("MQTT_PASS", "")),
-            "lock_id": str(os.getenv("MQTT_LOCK_ID", "0")),
+            "lock_id": str(os.getenv("LOCK_NAME", "NFC_LOCK")),
             "prefix_topic": str(os.getenv("MQTT_PREFIX_TOPIC", "mqtt-homekey-lock")),
             "hass_enabled": (True if os.getenv("MQTT_HASS_ENABLED", "True") == "True" else False),
             "hass_status_topic": str(os.getenv("MQTT_STATUS_TOPIC", "homeassistant/status"))
@@ -50,7 +50,7 @@ def load_configuration() -> dict:
         "metrics": {
             "enabled": (True if os.getenv("PROMETHEUS_ENABLED", "True") == "True" else False),
             "port": int(os.getenv("PROMETHEUS_PORT", "8000")),
-            "lock_name": str(os.getenv("MQTT_LOCK_ID", "0"))
+            "lock_name": str(os.getenv("LOCK_NAME", "NFC_LOCK"))
         }
     }
 

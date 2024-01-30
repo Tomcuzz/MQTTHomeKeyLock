@@ -12,6 +12,7 @@ ENV TZ="Europe/London"
 
 # Set Log Level (10->DEBUG, 20->INFO, 30->WARNING, 50->ERROR, 60->CRITICAL)
 ENV LOG_LEVEL="20"
+ENV LOCK_NAME="NFC_LOCK"
 
 # Set Homekit default variables
 ENV NFC_PORT="USB0"
@@ -32,7 +33,6 @@ ENV MQTT_CLIENT_ID="mqtt-homekey-lock"
 ENV MQTT_AUTH="False"
 ENV MQTT_USER=""
 ENV MQTT_PASS=""
-ENV MQTT_LOCK_ID="0"
 ENV MQTT_PREFIX_TOPIC="mqtt-homekey-lock"
 ENV MQTT_HASS_ENABLED="True"
 ENV MQTT_STATUS_TOPIC="homeassistant/status"
