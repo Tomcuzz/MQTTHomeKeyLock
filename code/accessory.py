@@ -8,6 +8,7 @@ from pyhap.const import CATEGORY_DOOR_LOCK
 
 from service import Service
 from mqtt import Mqtt
+from prometheus import AppMetrics
 
 log = logging.getLogger()
 
@@ -17,7 +18,14 @@ class Lock(Accessory):
     """Class to handle hap nfc lock."""
     category = CATEGORY_DOOR_LOCK
 
-    def __init__(self, *args, should_relock:bool, mqtt:Mqtt, service: Service, **kwargs):
+    def __init__(
+            self,
+            *args,
+            should_relock:bool,
+            mqtt:Mqtt,
+            metrics:AppMetrics,
+            service: Service,
+            **kwargs):
         super().__init__(*args, **kwargs)
         self._last_client_public_keys = None
 
@@ -28,6 +36,8 @@ class Lock(Accessory):
         self.service.on_endpoint_authenticated = self.on_endpoint_authenticated
         self.add_lock_service()
         self.add_nfc_access_service()
+
+        self.metrics = metrics
 
         self.mqtt = mqtt
         self.mqtt.update_callback = self.mqtt_update_callback
@@ -47,18 +57,30 @@ class Lock(Accessory):
         self.lock_target_state.set_value(self._lock_target_state, should_notify=True)
         self.mqtt.update_state(target_locked=bool(self._lock_target_state),
                                current_locked=bool(self._lock_current_state))
+        self.metrics.lock_updated(target_locked=bool(self._lock_target_state),
+                               current_locked=bool(self._lock_current_state),
+                               key_id=endpoint_id)
         self._lock_current_state = self._lock_target_state
         self.lock_current_state.set_value(self._lock_current_state, should_notify=True)
         self.mqtt.update_state(target_locked=bool(self._lock_target_state),
                                current_locked=bool(self._lock_current_state))
+        self.metrics.lock_updated(target_locked=bool(self._lock_target_state),
+                               current_locked=bool(self._lock_current_state),
+                               key_id=endpoint_id)
         if self.should_relock and not bool(self._lock_target_state):
             time.sleep(1)
             self._lock_target_state = 1
             self.mqtt.update_state(target_locked=bool(self._lock_target_state),
                                    current_locked=bool(self._lock_current_state))
+            self.metrics.lock_updated(target_locked=bool(self._lock_target_state),
+                                current_locked=bool(self._lock_current_state),
+                                key_id=endpoint_id)
             self._lock_current_state = 1
             self.mqtt.update_state(target_locked=bool(self._lock_target_state),
                                    current_locked=bool(self._lock_current_state))
+            self.metrics.lock_updated(target_locked=bool(self._lock_target_state),
+                                current_locked=bool(self._lock_current_state),
+                                key_id=endpoint_id)
 
 
     def add_preload_service(self, service, chars=None, unique_id=None):
@@ -162,6 +184,8 @@ class Lock(Accessory):
         self._lock_target_state = self._lock_current_state = value
         self.lock_current_state.set_value(self._lock_current_state, should_notify=True)
         self.mqtt.update_state(target_locked=bool(self._lock_target_state),
+                               current_locked=bool(self._lock_current_state))
+        self.metrics.lock_updated(target_locked=bool(self._lock_target_state),
                                current_locked=bool(self._lock_current_state))
         return self._lock_target_state
 

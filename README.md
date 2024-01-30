@@ -134,6 +134,17 @@ Configuration is done via a Docker Environment Variables, with the following con
             <td>The status topic to watch for home assistant status</td>
             <td>"homeassistant/status"</td>
         </tr>
+        <tr>
+            <td rowspan=2>Prometheus</td>
+            <td>PROMETHEUS_ENABLED</td>
+            <td>Should prometheus metrics be exported.</td>
+            <td>"True"</td>
+        </tr>
+        <tr>
+            <td>PROMETHEUS_PORT</td>
+            <td>The port prometheus metrics should be exported on.</td>
+            <td>"8000"</td>
+        </tr>
     </tbody>
 </table>
 

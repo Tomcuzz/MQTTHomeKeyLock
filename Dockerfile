@@ -37,6 +37,10 @@ ENV MQTT_PREFIX_TOPIC="mqtt-homekey-lock"
 ENV MQTT_HASS_ENABLED="True"
 ENV MQTT_STATUS_TOPIC="homeassistant/status"
 
+# Set Prometheus default values
+ENV PROMETHEUS_ENABLED="True"
+ENV PROMETHEUS_PORT="8000"
+
 #Update pip
 RUN pip install --upgrade pip
 
