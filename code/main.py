@@ -25,6 +25,7 @@ def load_configuration() -> dict:
             "broadcast": (True if os.getenv("NFC_BROADCAST", "True") == "True" else False)
         },
         "hap": {
+            "lock_name": str(os.getenv("LOCK_NAME", "NFC_LOCK")),
             "port": int(os.getenv("HAP_PORT", "51926")),
             "persist": str(os.getenv("HAP_PERSIST", "/persist/hap.state")),
             "should_relock": (True if os.getenv("LOCK_SHOULD_RELOCK", "True") == "True" else False)
@@ -76,7 +77,7 @@ def configure_metrics(config: dict) -> AppMetrics:
 def configure_hap_accessory(config: dict, mqtt: Mqtt, metrics:AppMetrics, homekey_service=None):
     """Configure HAP accessory."""
     driver = AccessoryDriver(port=config["port"], persist_file=config["persist"])
-    accessory = Lock(driver, "NFC Lock", should_relock=config["should_relock"],
+    accessory = Lock(driver, config["lock_name"], should_relock=config["should_relock"],
                      mqtt=mqtt, metrics=metrics, service=homekey_service)
     driver.add_accessory(accessory=accessory)
     return driver, accessory
